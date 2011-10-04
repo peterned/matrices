@@ -1,5 +1,5 @@
 /**
- * Matrix Play
+ * Playing with CSS matrices
  *
  * Drag a box around to get the transform css!
  * Version 1.2 - 2011/10/04
@@ -17,7 +17,7 @@
 	 */
 
 	if(!Function.prototype.bind) {
-		Function.prototype.bind = function(scope) {
+		Function.prototype.bind = function(scope /* missing args, but sufficient for this demo */) {
 			var method = this;
 			return function() {
 				return method.apply(scope, arguments);
@@ -91,6 +91,7 @@
 	};
 	
 	Play.prototype = {
+
 		/**
 		 * mousedown/touchstart handler
 		 *
@@ -98,9 +99,7 @@
 		handleMousedown: function(e){
 			e.preventDefault();
 			
-			// jquery wraps the native event, need it for e.touches though
 			var ev = this.getTouch(e);
-
 			var handle = closest('span', e.target);
 			var play = this.play;
 
