@@ -1,15 +1,15 @@
 /**
  * Playing with CSS matrices
+ * Version 1.2 - 2011/10/04 - https://github.com/peterned/
  *
- * Drag a box around to get the transform css!
- * Version 1.2 - 2011/10/04
- *
+ * Available under the MIT license, see license.txt or
+ * http://www.opensource.org/licenses/mit-license.php
  */
 (function() {
 
-	
+
 	// decimals of the matrix css output
-	var FIXED = 3; 
+	var FIXED = 3;
 
 	/**
 	 * Various helpers
@@ -36,14 +36,14 @@
 		}
 		return node;
 	}
-	
+
 	function addEvent(node, type, listener) {
 		node.addEventListener(type, listener, false);
 	}
-	
+
 	function addEvents(nodes, type, listener) {
 		var i, l = nodes.length;
-		for (i = 0; i < l; i++) {	
+		for (i = 0; i < l; i++) {
 			addEvent(nodes[i], type, listener);
 		}
 	}
@@ -51,7 +51,7 @@
 
 	/**
 	 * Play
-	 * 
+	 *
 	 */
 	var Play = function() {
 		this.play = find('#play')[0];
@@ -60,24 +60,24 @@
 		// the draggable handles
 		var handles = find('#play span');
 		var touch = Client.touchEnabled();
-		
-		addEvents(handles, touch ? 'touchstart' : 'mousedown', 
+
+		addEvents(handles, touch ? 'touchstart' : 'mousedown',
 			this.handleMousedown.bind(this));
-		
-		addEvent(document, touch ? 'touchmove' : 'mousemove', 
+
+		addEvent(document, touch ? 'touchmove' : 'mousemove',
 			this.handleMousemove.bind(this));
 
-		addEvent(document, touch ? 'touchend' : 'mouseup', 
+		addEvent(document, touch ? 'touchend' : 'mouseup',
 			this.handleMouseup.bind(this));
-		
+
 		addEvent(window, 'hashchange', this.restore.bind(this));
 
 		// transformation mode (handle classname)
-		this.mode = null; 
-		
+		this.mode = null;
+
 		// hash state
-		this.state = 'none'; 
-		
+		this.state = 'none';
+
 		// permanent transformation
 		this.display = new Matrix();
 
@@ -89,7 +89,7 @@
 			this.restore();
 		}
 	};
-	
+
 	Play.prototype = {
 
 		/**
@@ -98,29 +98,29 @@
 		 */
 		handleMousedown: function(e){
 			e.preventDefault();
-			
+
 			var ev = this.getTouch(e);
 			var handle = closest('span', e.target);
 			var play = this.play;
 
 			// store some vectors (see further below) for move calcs
 			this.center = new Vector(
-				play.offsetLeft + play.offsetWidth / 2, 
+				play.offsetLeft + play.offsetWidth / 2,
 				play.offsetTop + play.offsetHeight / 2
 			);
 
-			this.anchor = new Vector(ev.clientX, ev.clientY);			
+			this.anchor = new Vector(ev.clientX, ev.clientY);
 			this.offset = this.anchor.subtract(this.center);
 
 			this.mode = handle.className;
 		},
-		
+
 		/**
 		 * mousemove/touchmove handler
 		 *
 		 */
 		handleMousemove: function(e){
-			
+
 			// If no current mode, do nothing. Conditional binding would be prettier.
 			if(!this.mode) {
 				return;
@@ -129,7 +129,7 @@
 			e.preventDefault();
 
 			var ev = this.getTouch(e);
-			
+
 			var point = new Vector(ev.clientX, ev.clientY);
 			var center = this.center;
 			var anchor = this.anchor;
@@ -188,7 +188,7 @@
 			}
 
 			e.preventDefault();
-			
+
 			// clear the mode, update display and output result.
 			this.mode = null;
 			this.save();
@@ -198,7 +198,7 @@
 			// multitouch vs mouse
 			return e.touches? e.touches[0] : e;
 		},
-		
+
 		/**
 		 * send the matrix over to the Style object (see below)
 		 *
@@ -215,7 +215,7 @@
 				return (parseInt(n, 10) !== n)? n.toFixed(FIXED) : n;
 			}).join(',');
 
-			
+
 			this.render(this.display);
 			this.state = state;
 
@@ -229,7 +229,7 @@
 			this.render(reset);
 			this.state = null;
 		},
-		
+
 		/**
 		 * Outputs the given matrix to the output area for copy-pasting
 		 *
@@ -244,7 +244,7 @@
 		 *
 		 */
 		restore: function() {
-			var hash = window.location.hash;			
+			var hash = window.location.hash;
 			if(hash && hash.length) {
 				try {
 					var state = hash.substring(1);
@@ -286,19 +286,19 @@
 		add: function(v) {
 			return new Vector(this.x + v.x, this.y + v.y);
 		},
-		
+
 		subtract: function(v) {
 			return new Vector(this.x - v.x, this.y - v.y);
 		},
-		
+
 		multiply: function(v) {
 			return new Vector(this.x * v.x, this.y * v.y);
 		},
-		
+
 		divide: function(v) {
 			return new Vector(this.x / v.x, this.y / v.y);
 		},
-		
+
 		// not used
 		dot:function(b){
 			var d = this.multiply(b);
@@ -317,12 +317,12 @@
 			var m = this.magnitude();
 			return new Vector(this.x/m, this.y/m);
 		},
-		
+
 		// applies a matrix to this vector for total transformation, not used in this app.
 		transform: function(matrix) {
 			var m = matrix.base;
 			return new Vector(
-				m[0] * this.x + m[1] * this.y + m[2], 
+				m[0] * this.x + m[1] * this.y + m[2],
 				m[3] * this.x + m[4] * this.y + m[5]
 			);
 		}
@@ -339,7 +339,7 @@
 
 	Matrix.prototype = {
 		_multiply: function(
-			a1,a2,a3,a4,a5,a6, 
+			a1,a2,a3,a4,a5,a6,
 			b1,b2,b3,b4,b5,b6
 		) {
 			return new Matrix([
@@ -400,24 +400,24 @@
 		touchEnabled: function() {
 			return !!('ontouchstart' in window);
 		},
-		
+
 		webkit: /webkit\//i.test(ua),
 		gecko: /gecko\//i.test(ua),
 		trident: /trident\//i.test(ua),
 		presto: /presto\//i.test(ua)
 	};
 
-	
+
 	/**
 	 * Style
 	 *
 	 */
 	var Style = (function() {
-	
-		var prefix = 
-			Client.webkit ? '-webkit-' : 
+
+		var prefix =
+			Client.webkit ? '-webkit-' :
 			Client.gecko ? '-moz-' :
-			Client.presto ? '-o-' : 
+			Client.presto ? '-o-' :
 			Client.trident ? '-ms-' : '';
 
 		var csstransition = prefix + 'transition';
@@ -437,36 +437,36 @@
 				var value = transition.replace(regtransform, regreplace);
 				this.set(node, csstransition, value);
 			},
-			
+
 			setTransform: function(node, transform) {
 				var value = transform;
 				if(transform instanceof Matrix) {
 					var array = transform.toArray();
-					
+
 					// mozilla requires units in the matrix's translation
 					if(Client.gecko) {
 						array[4] += 'px';
 						array[5] += 'px';
 					}
-					
+
 					value = 'matrix(' + array.join(',') + ')';
 				}
-				
+
 				this.set(node, csstransform, value);
 			},
-			
+
 			// not used
 			setTranslate: function(node, x, y) {
-				this.set(node, csstransform, 
+				this.set(node, csstransform,
 					'translate(' + unit(x) + ',' + unit(y) + ')');
 			},
 
-			set: 
+			set:
 				Client.trident? // IE
-				
+
 				function(node, property, value) {
 					node.style[property] = value;
-				} : 
+				} :
 
 				function(node, property, value) {
 					node.style.setProperty(property, value, PRIORITY);
@@ -476,8 +476,8 @@
 			get: function(node, property) {
 				var computed = window.getComputedStyle(node, null);
 				var style = node.style;
-				var value = 
-					computed.getPropertyValue(property) || 
+				var value =
+					computed.getPropertyValue(property) ||
 					style.getPropertyValue(property) ||
 					style[property];
 
@@ -492,12 +492,12 @@
 				var cleaned = matrix.toArray().map(function(n){
 					return (fix && (parseInt(n, 10) !== n)) ? n.toFixed(fix) : n
 				});
-				
+
 				var css = cleaned.join(',');
 				cleaned[4] += 'px';
-				cleaned[5] += 'px';				
+				cleaned[5] += 'px';
 				var moz = cleaned.join(',');
-				
+
 				return [
 					'-webkit-transform: matrix(' + css + ');',
 					'-moz-transform: matrix(' + moz + ');',
@@ -513,7 +513,7 @@
 
 	/**
 	 * Run!
-	 * 
+	 *
 	 */
 
 	addEvent(window, 'DOMContentLoaded', function () {
